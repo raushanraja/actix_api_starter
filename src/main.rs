@@ -1,6 +1,9 @@
 use actix_cors::Cors;
 use actix_web::{App, HttpServer};
-use api_starter::{api::v1::endpoints::root::root, config::configure};
+use api_starter::{
+    api::v1::endpoints::{date::get_utc, root::root},
+    config::configure,
+};
 use uuid::Uuid;
 
 async fn serve() {
@@ -13,7 +16,11 @@ async fn serve() {
             .allow_any_method()
             .allow_any_header();
 
-        App::new().app_data(server_id).wrap(cors).service(root)
+        App::new()
+            .app_data(server_id)
+            .wrap(cors)
+            .service(root)
+            .service(get_utc)
     })
     .bind(format!("0.0.0.0:{}", port))
     .expect("Error starting")
